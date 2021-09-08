@@ -1,18 +1,5 @@
-
-const excelToJson = require('convert-excel-to-json');
-const excelData = excelToJson({
-    sourceFile: './excel/namesQC.xlsx',
-    header:{
-        rows: 1
-    },
-    columnToKey: {
-        A: 'UPC',
-        B: 'itemNum',
-        C: 'drizlyName',
-        D: 'ucName'
-    }
-});
-
+const drizlyNames = require('./demoArrays/drizlyNamesArray');
+const ucNames     = require('./demoArrays/ucNamesArray');
 
 const formatString = {
     cleanString:function(string){
@@ -22,7 +9,6 @@ const formatString = {
         string = string.replace( /\)/g, "");
         //outlier(s)
         string = string.replace('355ml','12oz'); // conversion math gives us 11.99oz but it should be force to 12. Don't want to round for consistancy
-
 
         //regexp
         const lookForOz = RegExp("(\\s+[0-9]+\\s+oz)|(\\s+[0-9]+oz)|(\\s+[0-9]+\\.[0-9]+oz)|(\\s+[0-9]+\\.[0-9]+\\s+oz)");
@@ -39,6 +25,7 @@ const formatString = {
         if(lookForLiter.test(string)){
             string = this.removeLiter(string); //I don't remove liters since this dimension size seeems consistant vs ml/oz
         }
+
         //remove words that may lower confidence level
         string = this.removeAmbiguousWords(string);
         //remove any double+ white space
@@ -62,7 +49,7 @@ const formatString = {
             let numWithOz = lookForOzAndDecimal.exec(string)[0];
             let numOnly = numWithOz.slice(0,-2);
 
-            //remove everything after decimal and decimal point
+            //removes decimal point and everything after, no rounding
             let hasDecimal = true;
             while(hasDecimal){
                 if(numOnly[numOnly.length -1] === "."){
@@ -143,7 +130,6 @@ const calculateStringMatch = {
     },
     cleanStringMatch:function(array1,array2){
         for(let i = 0; i < array1.length;i++){
-            // productA = formatString.cleanString(array1[i]);
             let productA = formatString.cleanString(array1[i]);
             let productB = formatString.cleanString(array2[i]);
             productA = productA.split(" ");
@@ -166,9 +152,10 @@ const calculateStringMatch = {
 
 
 
-calculateStringMatch.cleanStringMatch(excelData);
+//function will clean both strings before doing a comparison. Check console for comparison data. 
+calculateStringMatch.cleanStringMatch(ucNames,drizlyNames);
 
-// calculateStringMatch.cleanStringMatch(ucNames,drizlyNames);
+//ERRORS: there are a few issues I still need to address, such as better conversion, fixing ml with decimals, and a few minor things I'm noticing when I run teh script. 
 
 
 

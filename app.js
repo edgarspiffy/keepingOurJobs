@@ -15,7 +15,7 @@ const excelData = excelToJson({
     }
 })['Sheet1'];
 
-
+const newData =[];
 
 const formatString = {
     cleanString:function(string){
@@ -23,9 +23,17 @@ const formatString = {
         string = string.toLowerCase();
         string = string.replace( /\(/g, "");
         string = string.replace( /\)/g, "");
-        string = string.replace(/\u0301|\u00e9/g,'e'); //converts é to e 
+        string = string.replace(/\u0301|\u00e9/g,'e'); // é to e 
+        string = string.replace(/\u00E4/g,'a'); // ä to a 
+        string = string.replace(/\u00F1/g,'n'); // ñ to n
         string = string.replace(/snapples/g,'snapple');
-        string = string.replace(/year/g,'yr');
+        string = string.replace(/\syear/g,' yr');
+        string = string.replace(/\s+no\./g,' no');
+        string = string.replace(/a\s&\sj/g,'e&j');
+        string = string.replace(/j\s&\sb/g,'j&b');
+        string = string.replace(/-/g,' '); // remove -
+
+
         //outlier(s)
         string = string.replace('355ml','12oz');
         //regexp
@@ -129,8 +137,8 @@ const formatString = {
 
 
 const calculateStringMatch = {
-    originalStringMatch:function(array1,array2){
-        for(let i = 0; i < array1.length;i++){
+    originalStringMatch:function(excelData){
+        for(let i = 0; i < excelData.length;i++){
             let productA = array1[i].split(" ");
             let productB = array2[i].split(" ");
     
@@ -149,7 +157,6 @@ const calculateStringMatch = {
     },
     cleanStringMatch:function(excelData){
         for(let i = 0; i < excelData.length;i++){
-            // productA = formatString.cleanString(array1[i]);
             let productA = formatString.cleanString(excelData[i]['ucName']);
             let productB = formatString.cleanString(excelData[i]['drizlyName']);
             productA = productA.split(" ");
@@ -161,18 +168,39 @@ const calculateStringMatch = {
                 for(let m = 0; m < productB.length; m++){
                     if(productA[j] === productB[m]){
                         matchwingWordsCount++;
+                        break;
                     }
                 }
             }
-            const accuracy = (matchwingWordsCount/productA.length)*100;
-            // console.log(`${i} ${accuracy.toFixed(2)}% || ${productA} || ${productB}`)
+            let accuracy = (matchwingWordsCount/productA.length)*100;
+            accuracy = accuracy.toFixed(2);
+
+            productA = productA.join(" ");
+            productB = productB.join(" ");
+         
+
+             newData.push(excelData[i] = {
+                'itemNum':excelData[i]['itemNum'],
+                'UPC':excelData[i]['UPC'],
+                'drizlyName':excelData[i]['drizlyName'],
+                'ucName':excelData[i]['ucName'],
+                'category':excelData[i]['category'],
+                'ucNameClean':productA,
+                'drizlyNameClean':productB,
+                'percentageMatch':accuracy
+            });
+
+
+            // const accuracy = (matchwingWordsCount/productA.length)*100;
+      
+
+           // console.log(`${i} ${accuracy.toFixed(2)}% || ${productA} || ${productB}`)
         }
     }
 }
 
-
-
 calculateStringMatch.cleanStringMatch(excelData);
+
 
 // Read QC Template into a file
 const workbook = new ExcelJS.Workbook();
@@ -181,21 +209,28 @@ await workbook.xlsx.readFile(
 );
 const sheet = workbook.getWorksheet('Sheet1');
 
-const rows = sheet.getRows(2, excelData.length);
+const rows = sheet.getRows(2, newData.length);
 
-for (let i = 0; i < excelData.length; i++) {
-    const upc         = rows[i].getCell('A');
-    const itemNum     = rows[i].getCell('B');
-    const ucNames     = rows[i].getCell('C');
-    const drizlyNames = rows[i].getCell('D');
+for (let i = 0; i < newData.length; i++) {
+    const upc          = rows[i].getCell('A');
+    const itemNum      = rows[i].getCell('B');
+    const ucNames      = rows[i].getCell('C');
+    const drizlyNames  = rows[i].getCell('D');
+    const ucClean      = rows[i].getCell('E');
+    const drizlyClean  = rows[i].getCell('F');
+    const cleanPercent = rows[i].getCell('H');
     // const category    = rows[i].getCell('E');
     
 
-    upc.value         = excelData[i]['UPC'];
-    itemNum.value     = excelData[i]['itemNum'];
-    ucNames.value     = excelData[i]['ucName'];
-    drizlyNames.value = excelData[i]['drizlyName'];
-    // category.value    = excelData[i]['category'];
+    upc.value            = newData[i]['UPC'];
+    itemNum.value        = newData[i]['itemNum'];
+    ucNames.value        = newData[i]['ucName'];
+    drizlyNames.value    = newData[i]['drizlyName'];
+    ucClean.value        = newData[i]['ucNameClean'];
+    drizlyClean.value    = newData[i]['drizlyNameClean'];
+    cleanPercent.value   = newData[i]['percentageMatch'];
+
+    // category.value    = excelData[i]['çcategory'];
 }
 
 await workbook.xlsx.writeFile(

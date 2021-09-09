@@ -32,6 +32,7 @@ const formatString = {
         string = string.replace(/a\s&\sj/g,'e&j');
         string = string.replace(/j\s&\sb/g,'j&b');
         string = string.replace(/-/g,' '); // remove -
+        string = string.replace(/a\s&\sw/g,'a&w'); // remove -
 
 
         //outlier(s)
@@ -127,10 +128,11 @@ const formatString = {
         }
         return string;
     },
-    wordsToRemove:[
+    wordsToRemove:[ //plural needs to come before singular words so bottles needs to come before bottle
         "bottle","bottles",
-        "can","cans",
-        "'s",'\xAE'
+        "cans","can",
+        "'s",'\xAE',
+        "ct",
     ],
 };
 
@@ -162,18 +164,87 @@ const calculateStringMatch = {
             productA = productA.split(" ");
             productB = productB.split(" ");
 
-            let matchwingWordsCount = 0;
-
-            for(let j = 0; j < productA.length;j++){
-                for(let m = 0; m < productB.length; m++){
-                    if(productA[j] === productB[m]){
-                        matchwingWordsCount++;
-                        break;
+            const getMatchPercentage = function(productA,productB){
+                let matchwingWordsCountAtoB = 0;
+                let arraySubtractorAtoB = 0; //when a word gets conca and a match returns we need to subtract it from word count
+                
+                for(let j = 0; j < productA.length;j++){
+                    for(let m = 0; m < productB.length; m++){
+                        if(productA[j] === productB[m]){
+                            matchwingWordsCountAtoB++;
+                            break;
+                        }
+                        if(`${productA[j]}.` === productB[m]){
+                            matchwingWordsCountAtoB++;
+                            break;
+                        }
+                        if(`${productA[j]}${productA[j+1]}` === productB[m]){
+                            matchwingWordsCountAtoB++;
+                            arraySubtractorAtoB++
+                            break;
+                        }
                     }
                 }
+                let accuracyAtoB = (matchwingWordsCountAtoB/(productA.length - arraySubtractorAtoB))*100;
+                return accuracyAtoB;
             }
-            let accuracy = (matchwingWordsCount/productA.length)*100;
-            accuracy = accuracy.toFixed(2);
+
+            let yoyoab = getMatchPercentage(productA,productB);
+            let accuracyBtoA = getMatchPercentage(productB,productA);
+            let resultsAverage = (yoyoab + accuracyBtoA)/2
+            resultsAverage = resultsAverage.toFixed(2);
+            console.log(resultsAverage);
+            // let matchwingWordsCountAtoB = 0;
+            // let arraySubtractorAtoB = 0; //when a word gets conca and a match returns we need to subtract it from word count
+            // for(let j = 0; j < productA.length;j++){
+            //     for(let m = 0; m < productB.length; m++){
+            //         if(productA[j] === productB[m]){
+            //             matchwingWordsCountAtoB++;
+            //             break;
+            //         }
+            //         if(`${productA[j]}.` === productB[m]){
+            //             matchwingWordsCountAtoB++;
+            //             break;
+            //         }
+            //         if(`${productA[j]}${productA[j+1]}` === productB[m]){
+            //             matchwingWordsCountAtoB++;
+            //             arraySubtractorAtoB++
+            //             break;
+            //         }
+            //         if(productA[j] !== productB[m]){
+
+            //         }
+            //     }
+            // }
+            
+            // let matchwingWordsCountBtoA = 0;
+            // let arraySubtractorBtoA = 0; //when a word gets conca and a match returns we need to subtract it from word count
+            // for(let s = 0; s < productB.length;s++){
+            //     for(let f = 0; f < productA.length; f++){
+            //         if(productB[s] === productA[f]){
+            //             matchwingWordsCountBtoA++;
+            //             break;
+            //         }
+            //         if(`${productA[s]}.` === productB[f]){
+            //             matchwingWordsCountBtoA++;
+            //             break;
+            //         }
+            //         if(`${productA[s]}${productA[s+1]}` === productB[f]){
+            //             matchwingWordsCountBtoA++;
+            //             arraySubtractorBtoA++
+            //             break;
+            //         }
+                  
+
+            //     }
+            // }
+
+            // let accuracyAtoB = (matchwingWordsCountAtoB/(productA.length - arraySubtractorAtoB))*100;
+            // let accuracyBtoA = (matchwingWordsCountBtoA/(productB.length - arraySubtractorBtoA))*100;
+            // let resultsAverage = (accuracyAtoB + accuracyBtoA)/2
+
+
+            // resultsAverage = resultsAverage.toFixed(2);
 
             productA = productA.join(" ");
             productB = productB.join(" ");
@@ -187,7 +258,7 @@ const calculateStringMatch = {
                 'category':excelData[i]['category'],
                 'ucNameClean':productA,
                 'drizlyNameClean':productB,
-                'percentageMatch':accuracy
+                'percentageMatch':resultsAverage
             });
 
 

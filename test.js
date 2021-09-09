@@ -1,5 +1,5 @@
-let string = "a & j burger bar  no.- whiskey";
+let string = ['goo','hi','bob','lets','build','it'];
+string = string.join("");
+let mybob = 'hibob';
 
-let patt =  /\s-/g
-
-console.log(patt.test(string));
+console.log(string.indexOf(mybob));

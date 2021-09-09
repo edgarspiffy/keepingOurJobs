@@ -29,6 +29,7 @@ const formatString = {
         string = string.replace(/\u00F1/g,'n');        // ñ to n
         string = string.replace(/-/g,' ');             // remove -
         string = string.replace(/'/g,'');              // remove '
+        string = string.replace(/no\./g,' no. ');      //forces space around
         string = string.replace(/\syear/g,' yr');
         //outlier(s)
         string = string.replace('355ml','12oz');

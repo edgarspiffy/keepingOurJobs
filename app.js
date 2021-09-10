@@ -20,10 +20,10 @@ const matchResults =[];
 
 const formatString = {
     cleanString:function(string){
+        if(string === undefined){
+            string = 'missing';
+        }
         //basic clean up
-        console.log(string);
-        console.log(typeof string);
-        
         string = string.toString();
         string = string.toLowerCase();
         string = string.replace( /\(/g, "");
@@ -134,7 +134,7 @@ const formatString = {
         "'s",'\xAE',
         "ct","bags","bag",
         "boxes","box","plastic",
-        "count"
+        "count "
     ],
 };
 
@@ -144,10 +144,15 @@ const calculateStringMatch = {
     getMatchResults:function(excelData){
         for(let i = 0; i < excelData.length;i++){
 
-            let productA      = excelData[i]['POS360 DB Name'];
-            let productB      = excelData[i]['CRE Name'];
-            let productC      = excelData[i]['CRE Name + Extra'];
-            let productD      = excelData[i]['Drizly Name'];
+            let productA      = excelData[i]['POS360 DB Name'].toString();
+            let productB      = excelData[i]['CRE Name'].toString();
+            let productC      = excelData[i]['CRE Name + Extra'].toString();
+            let productD      = excelData[i]['Drizly Name'].toString();
+
+            productA = productA.replace(/\s{2,}/g," "); 
+            productB = productB.replace(/\s{2,}/g," "); 
+            productC = productC.replace(/\s{2,}/g," "); 
+            productD = productD.replace(/\s{2,}/g," "); 
 
 
             let productAClean = formatString.cleanString(excelData[i]['POS360 DB Name']);
@@ -180,6 +185,10 @@ const calculateStringMatch = {
             let stringMatchCleanCtoA    = this.getMatchPercentage(productCClean,productAClean);
             let stringMatchCleanAtoD    = this.getMatchPercentage(productAClean,productDClean);
             let stringMatchCleanDtoA    = this.getMatchPercentage(productDClean,productAClean);
+
+
+            console.log(` a to d ${stringMatchOriginalAtoD}`);
+            console.log(` d to a${stringMatchOriginalDtoA}`);
 
             let resultForOriginalComparisonAandB = (stringMatchOriginalAtoB + stringMatchOriginalBtoA)/2
             let resultForOriginalComparisonAandC = (stringMatchOriginalAtoC + stringMatchOriginalCtoA)/2
@@ -251,6 +260,7 @@ const calculateStringMatch = {
                 if(`${productA[j]}${productA[j+1]}` === productB[m]){
                     matchwingWordsCountAtoB++;
                     arraySubtractorAtoB++
+                    j++
                     break;
                 }
                 if(productA[j] === `${productB[m]}${productB[m+1]}`){
@@ -273,7 +283,15 @@ const calculateStringMatch = {
         return accuracyAtoB;
     }
 }
+let a = 'franks red hot wings sauce buffalo 12';
+let b = 'franks redhot hot buffalo wings sauce 12';
 
+let ab = calculateStringMatch.getMatchPercentage(b,a);
+let ba = calculateStringMatch.getMatchPercentage(a,b);
+let myresults    = (ab + ba)/2
+
+myresults = parseFloat(myresults.toFixed(2));
+console.log(myresults);
 calculateStringMatch.getMatchResults(excelData);
 
 // Read QC Template into a file
@@ -284,28 +302,28 @@ await workbook.xlsx.readFile(
 const sheet = workbook.getWorksheet('Sheet1');
 const rows = sheet.getRows(3, matchResults.length);
 for (let i = 0; i < matchResults.length; i++) {
-    const itemNum              = rows[i].getCell('A');
-    const UPC                  = rows[i].getCell('B');
 
-    const ogPOS360             = rows[i].getCell('C');
-    const ogCRE                = rows[i].getCell('D');
-    const ogCREPlus            = rows[i].getCell('E');
-    const ogDrizly             = rows[i].getCell('F');
+    const itemNum                   = rows[i].getCell('A');
+    const UPC                       = rows[i].getCell('B');
+
+    const ogPOS360                  = rows[i].getCell('C');
+    const ogCRE                     = rows[i].getCell('D');
+    const ogCREPlus                 = rows[i].getCell('E');
+    const ogDrizly                  = rows[i].getCell('F');
 
 
-    const cleanPOS360          = rows[i].getCell('G');
-    const cleanCRE             = rows[i].getCell('H');
-    const cleanCREPlus         = rows[i].getCell('I');
-    const cleanDrizly          = rows[i].getCell('J');
+    const cleanPOS360               = rows[i].getCell('G');
+    const cleanCRE                  = rows[i].getCell('H');
+    const cleanCREPlus              = rows[i].getCell('I');
+    const cleanDrizly               = rows[i].getCell('J');
 
-    const ogCREResults         = rows[i].getCell('K');
-    const ogCREPlusResults     = rows[i].getCell('L');
-    const ogDrizlyResults      = rows[i].getCell('M');
+    const ogCREResults              = rows[i].getCell('K');
+    const ogCREPlusResults          = rows[i].getCell('L');
+    const ogDrizlyResults           = rows[i].getCell('M');
 
-    const cleanCREResults      = rows[i].getCell('N');
-    const cleanCREPlusResults  = rows[i].getCell('O');
-    const cleanDrizlyResults   = rows[i].getCell('P');
-
+    const cleanCREResults           = rows[i].getCell('N');
+    const cleanCREPlusResults       = rows[i].getCell('O');
+    const cleanDrizlyResults        = rows[i].getCell('P');
 
      itemNum.value                  = matchResults[i]['itemNum'];              
      UPC.value                      = matchResults[i]['UPC'];                  
@@ -314,7 +332,6 @@ for (let i = 0; i < matchResults.length; i++) {
      ogCRE.value                    = matchResults[i]['CRE Name'];                
      ogCREPlus.value                = matchResults[i]['CRE Name + Extra'];            
      ogDrizly.value                 = matchResults[i]['Drizly Name'];            
-
 
      cleanPOS360.value              = matchResults[i]['Clean POS360 DB Name'];          
      cleanCRE.value                 = matchResults[i]['Clean CRE Name'];             
@@ -337,3 +354,4 @@ await workbook.xlsx.writeFile(
 
 console.log('script ran');
 
+//pos to drizly 116

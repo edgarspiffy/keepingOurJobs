@@ -16,7 +16,11 @@ const excelData = excelToJson({
     }
 })['Sheet1'];
 
+
+
 const matchResults =[];
+
+
 
 const formatString = {
     cleanString:function(string){
@@ -28,7 +32,7 @@ const formatString = {
         string = string.toLowerCase();
         string = string.replace( /\(/g, "");
         string = string.replace( /\)/g, "");
-        string = string.replace(/\u0301|\u00e9/g,'e'); // é to e 
+        string = string.replace(/\u03git01|\u00e9/g,'e'); // é to e 
         string = string.replace(/\u00F3|\u00F2/g,'e'); // ó to o 
         string = string.replace(/\u00E4/g,'a');        // ä to a 
         string = string.replace(/\u00F1/g,'n');        // ñ to n
@@ -118,7 +122,6 @@ const formatString = {
             let numOnly = numWithLiter.slice(0,-1);
             string = string.replace(numWithLiter,numOnly);
             return string;
-
     },
     removeAmbiguousWords:function(string){
 
@@ -154,12 +157,10 @@ const calculateStringMatch = {
             productC = productC.replace(/\s{2,}/g," "); 
             productD = productD.replace(/\s{2,}/g," "); 
 
-
             let productAClean = formatString.cleanString(excelData[i]['POS360 DB Name']);
             let productBClean = formatString.cleanString(excelData[i]['CRE Name']);
             let productCClean = formatString.cleanString(excelData[i]['CRE Name + Extra']);
             let productDClean = formatString.cleanString(excelData[i]['Drizly Name']);
-
 
             productA      = productA.split(" ");
             productB      = productB.split(" ");
@@ -177,7 +178,6 @@ const calculateStringMatch = {
             let stringMatchOriginalCtoA = this.getMatchPercentage(productC,productA);
             let stringMatchOriginalAtoD = this.getMatchPercentage(productA,productD);
             let stringMatchOriginalDtoA = this.getMatchPercentage(productD,productA);
-
 
             let stringMatchCleanAtoB    = this.getMatchPercentage(productAClean,productBClean);
             let stringMatchCleanBtoA    = this.getMatchPercentage(productBClean,productAClean);
@@ -201,7 +201,6 @@ const calculateStringMatch = {
             resultForCleanComparisonAandB = parseFloat(resultForCleanComparisonAandB.toFixed(2));
             resultForCleanComparisonAandC = parseFloat(resultForCleanComparisonAandC.toFixed(2));
             resultForCleanComparisonAandD = parseFloat(resultForCleanComparisonAandD.toFixed(2));
-
  
             productAClean = productAClean.join(" ");
             productBClean = productBClean.join(" ");
@@ -229,12 +228,13 @@ const calculateStringMatch = {
                 'Clean Result OG POS & CRE'        :resultForCleanComparisonAandB,
                 'Clean Result OG POS & CRE Extra'  :resultForCleanComparisonAandC,
                 'Clean Result OG  POS & Drizly'    :resultForCleanComparisonAandD,
-            });    
-        }
-    },
+            });     
+        }       
+    },      
     getMatchPercentage:function(productA,productB){
         let matchwingWordsCountAtoB = 0;
         let arraySubtractorAtoB = 0; //when a word gets concatenated and a match returns we need to subtract it from word count
+
         for(let j = 0; j < productA.length;j++){
             for(let m = 0; m < productB.length; m++){
                 if(productA[j] === productB[m]){
@@ -280,6 +280,8 @@ const calculateStringMatch = {
         return accuracyAtoB;
     }
 }
+
+
 
 calculateStringMatch.getMatchResults(excelData);
 

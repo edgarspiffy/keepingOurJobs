@@ -144,10 +144,10 @@ const calculateStringMatch = {
     getMatchResults:function(excelData){
         for(let i = 0; i < excelData.length;i++){
 
-            let productA      = excelData[i]['POS360 DB Name'].toString();
-            let productB      = excelData[i]['CRE Name'].toString();
-            let productC      = excelData[i]['CRE Name + Extra'].toString();
-            let productD      = excelData[i]['Drizly Name'].toString();
+            let productA      = excelData[i]['POS360 DB Name'].toString().toLowerCase();
+            let productB      = excelData[i]['CRE Name'].toString().toLowerCase();
+            let productC      = excelData[i]['CRE Name + Extra'].toString().toLowerCase();
+            let productD      = excelData[i]['Drizly Name'].toString().toLowerCase();
 
             productA = productA.replace(/\s{2,}/g," "); 
             productB = productB.replace(/\s{2,}/g," "); 
@@ -185,10 +185,6 @@ const calculateStringMatch = {
             let stringMatchCleanCtoA    = this.getMatchPercentage(productCClean,productAClean);
             let stringMatchCleanAtoD    = this.getMatchPercentage(productAClean,productDClean);
             let stringMatchCleanDtoA    = this.getMatchPercentage(productDClean,productAClean);
-
-
-            console.log(` a to d ${stringMatchOriginalAtoD}`);
-            console.log(` d to a${stringMatchOriginalDtoA}`);
 
             let resultForOriginalComparisonAandB = (stringMatchOriginalAtoB + stringMatchOriginalBtoA)/2
             let resultForOriginalComparisonAandC = (stringMatchOriginalAtoC + stringMatchOriginalCtoA)/2
@@ -270,6 +266,7 @@ const calculateStringMatch = {
                 //This usually catches brands that are 2 letters with an & in the middle
                 if(`${productA[j]}${productA[j+1]}${productA[j+2]}` === productB[m]){
                     matchwingWordsCountAtoB++;
+                    j+=2
                     arraySubtractorAtoB+=2;
                     break;
                 }
@@ -283,15 +280,7 @@ const calculateStringMatch = {
         return accuracyAtoB;
     }
 }
-let a = 'franks red hot wings sauce buffalo 12';
-let b = 'franks redhot hot buffalo wings sauce 12';
 
-let ab = calculateStringMatch.getMatchPercentage(b,a);
-let ba = calculateStringMatch.getMatchPercentage(a,b);
-let myresults    = (ab + ba)/2
-
-myresults = parseFloat(myresults.toFixed(2));
-console.log(myresults);
 calculateStringMatch.getMatchResults(excelData);
 
 // Read QC Template into a file

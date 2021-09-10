@@ -1,4 +1,4 @@
-let string = 64286030050;
+let productAstring = 64286030050;
 string = string.toString();
 string = string.split(" ");
 console.log(string);

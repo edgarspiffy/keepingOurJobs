@@ -2,16 +2,17 @@ import ExcelJS     from 'exceljs';
 import excelToJson from 'convert-excel-to-json';
 
 const excelData = excelToJson({
-    sourceFile: './excel/namesQC.xlsx',
+    sourceFile: './excel/AllData.xlsx',
     header:{
         rows: 1
     },
     columnToKey: {
         A: 'itemNum',
         B: 'UPC',
-        C: 'drizlyName',
-        D: 'ucName',
-        E: 'category'
+        C: 'POS360 DB Name',
+        D: 'CRE Name',
+        E: 'CRE Name + Extra',
+        F: 'Drizly Name'
     }
 })['Sheet1'];
 
@@ -20,6 +21,10 @@ const matchResults =[];
 const formatString = {
     cleanString:function(string){
         //basic clean up
+        console.log(string);
+        console.log(typeof string);
+        
+        string = string.toString();
         string = string.toLowerCase();
         string = string.replace( /\(/g, "");
         string = string.replace( /\)/g, "");
@@ -139,44 +144,87 @@ const calculateStringMatch = {
     getMatchResults:function(excelData){
         for(let i = 0; i < excelData.length;i++){
 
-            let productA      = excelData[i]['ucName'];
-            let productB      = excelData[i]['drizlyName'];
-            let productAClean = formatString.cleanString(excelData[i]['ucName']);
-            let productBClean = formatString.cleanString(excelData[i]['drizlyName']);
+            let productA      = excelData[i]['POS360 DB Name'];
+            let productB      = excelData[i]['CRE Name'];
+            let productC      = excelData[i]['CRE Name + Extra'];
+            let productD      = excelData[i]['Drizly Name'];
+
+
+            let productAClean = formatString.cleanString(excelData[i]['POS360 DB Name']);
+            let productBClean = formatString.cleanString(excelData[i]['CRE Name']);
+            let productCClean = formatString.cleanString(excelData[i]['CRE Name + Extra']);
+            let productDClean = formatString.cleanString(excelData[i]['Drizly Name']);
+
 
             productA      = productA.split(" ");
             productB      = productB.split(" ");
+            productC      = productC.split(" ");
+            productD      = productD.split(" ");
+
             productAClean = productAClean.split(" ");
             productBClean = productBClean.split(" ");
+            productCClean = productCClean.split(" ");
+            productDClean = productDClean.split(" ");
 
             let stringMatchOriginalAtoB = this.getMatchPercentage(productA,productB);
             let stringMatchOriginalBtoA = this.getMatchPercentage(productB,productA);
+            let stringMatchOriginalAtoC = this.getMatchPercentage(productA,productC);
+            let stringMatchOriginalCtoA = this.getMatchPercentage(productC,productA);
+            let stringMatchOriginalAtoD = this.getMatchPercentage(productA,productD);
+            let stringMatchOriginalDtoA = this.getMatchPercentage(productD,productA);
+
+
             let stringMatchCleanAtoB    = this.getMatchPercentage(productAClean,productBClean);
             let stringMatchCleanBtoA    = this.getMatchPercentage(productBClean,productAClean);
+            let stringMatchCleanAtoC    = this.getMatchPercentage(productAClean,productCClean);
+            let stringMatchCleanCtoA    = this.getMatchPercentage(productCClean,productAClean);
+            let stringMatchCleanAtoD    = this.getMatchPercentage(productAClean,productDClean);
+            let stringMatchCleanDtoA    = this.getMatchPercentage(productDClean,productAClean);
 
-            let resultForOriginalComparison = (stringMatchOriginalAtoB + stringMatchOriginalBtoA)/2
-            let resultForCleanComparison    = (stringMatchCleanAtoB + stringMatchCleanBtoA)/2
+            let resultForOriginalComparisonAandB = (stringMatchOriginalAtoB + stringMatchOriginalBtoA)/2
+            let resultForOriginalComparisonAandC = (stringMatchOriginalAtoC + stringMatchOriginalCtoA)/2
+            let resultForOriginalComparisonAandD = (stringMatchOriginalAtoD + stringMatchOriginalDtoA)/2
 
-            resultForOriginalComparison = parseFloat(resultForOriginalComparison.toFixed(2));
-            resultForCleanComparison    = parseFloat(resultForCleanComparison.toFixed(2));
+            let resultForCleanComparisonAandB    = (stringMatchCleanAtoB + stringMatchCleanBtoA)/2
+            let resultForCleanComparisonAandC    = (stringMatchCleanAtoC + stringMatchCleanCtoA)/2
+            let resultForCleanComparisonAandD    = (stringMatchCleanAtoD + stringMatchCleanDtoA)/2
 
+            resultForOriginalComparisonAandB = parseFloat(resultForOriginalComparisonAandB.toFixed(2));
+            resultForOriginalComparisonAandC = parseFloat(resultForOriginalComparisonAandC.toFixed(2));
+            resultForOriginalComparisonAandD = parseFloat(resultForOriginalComparisonAandD.toFixed(2));
 
+            resultForCleanComparisonAandB = parseFloat(resultForCleanComparisonAandB.toFixed(2));
+            resultForCleanComparisonAandC = parseFloat(resultForCleanComparisonAandC.toFixed(2));
+            resultForCleanComparisonAandD = parseFloat(resultForCleanComparisonAandD.toFixed(2));
+
+ 
             productAClean = productAClean.join(" ");
             productBClean = productBClean.join(" ");
+            productCClean = productCClean.join(" ");
+            productDClean = productDClean.join(" ");
 
             matchResults.push(excelData[i] = {
-                'itemNum'                 :excelData[i]['itemNum'],
-                'UPC'                     :excelData[i]['UPC'],
-                'drizlyName'              :excelData[i]['drizlyName'],
-                'ucName'                  :excelData[i]['ucName'],
-                'category'                :excelData[i]['category'],
-                'ucNameClean'             :productAClean,
-                'drizlyNameClean'         :productBClean,
-                'originalPercentageMatch' :resultForOriginalComparison,
-                'cleanPercentageMatch'    :resultForCleanComparison
-            });
- 
-        
+                'itemNum'                          :excelData[i]['itemNum'],
+                'UPC'                              :excelData[i]['UPC'],
+
+                'POS360 DB Name'                   :excelData[i]['POS360 DB Name'],
+                'CRE Name'                         :excelData[i]['CRE Name'],
+                'CRE Name + Extra'                 :excelData[i]['CRE Name + Extra'],
+                'Drizly Name'                      :excelData[i]['Drizly Name'],
+
+                'Result OG POS & CRE'              :resultForOriginalComparisonAandB,
+                'Result OG POS & CRE Extra'        :resultForOriginalComparisonAandC,
+                'Result OG  POS & Drizly'          :resultForOriginalComparisonAandD,
+
+                'Clean POS360 DB Name'             :productAClean,
+                'Clean CRE Name'                   :productBClean,
+                'Clean CRE Name + Extra'           :productCClean,
+                'Clean Drizly Name'                :productDClean,
+
+                'Clean Result OG POS & CRE'        :resultForCleanComparisonAandB,
+                'Clean Result OG POS & CRE Extra'  :resultForCleanComparisonAandC,
+                'Clean Result OG  POS & Drizly'    :resultForCleanComparisonAandD,
+            });    
         }
     },
     getMatchPercentage:function(productA,productB){
@@ -234,26 +282,53 @@ await workbook.xlsx.readFile(
     './excel/confidenceLevelResultsTemplate.xlsx'
 );
 const sheet = workbook.getWorksheet('Sheet1');
-const rows = sheet.getRows(2, matchResults.length);
+const rows = sheet.getRows(3, matchResults.length);
 for (let i = 0; i < matchResults.length; i++) {
-    const upc          = rows[i].getCell('A');
-    const itemNum      = rows[i].getCell('B');
-    const ucNames      = rows[i].getCell('C');
-    const drizlyNames  = rows[i].getCell('D');
-    const ucClean      = rows[i].getCell('E');
-    const drizlyClean  = rows[i].getCell('F');
-    const ogPercentage = rows[i].getCell('G');;
-    const cleanPercent = rows[i].getCell('H');
+    const itemNum              = rows[i].getCell('A');
+    const UPC                  = rows[i].getCell('B');
 
-    
-    upc.value            = matchResults[i]['UPC'];
-    itemNum.value        = matchResults[i]['itemNum'];
-    ucNames.value        = matchResults[i]['ucName'];
-    drizlyNames.value    = matchResults[i]['drizlyName'];
-    ucClean.value        = matchResults[i]['ucNameClean'];
-    drizlyClean.value    = matchResults[i]['drizlyNameClean'];
-    ogPercentage.value   = matchResults[i]['originalPercentageMatch'];
-    cleanPercent.value   = matchResults[i]['cleanPercentageMatch'];
+    const ogPOS360             = rows[i].getCell('C');
+    const ogCRE                = rows[i].getCell('D');
+    const ogCREPlus            = rows[i].getCell('E');
+    const ogDrizly             = rows[i].getCell('F');
+
+
+    const cleanPOS360          = rows[i].getCell('G');
+    const cleanCRE             = rows[i].getCell('H');
+    const cleanCREPlus         = rows[i].getCell('I');
+    const cleanDrizly          = rows[i].getCell('J');
+
+    const ogCREResults         = rows[i].getCell('K');
+    const ogCREPlusResults     = rows[i].getCell('L');
+    const ogDrizlyResults      = rows[i].getCell('M');
+
+    const cleanCREResults      = rows[i].getCell('N');
+    const cleanCREPlusResults  = rows[i].getCell('O');
+    const cleanDrizlyResults   = rows[i].getCell('P');
+
+
+     itemNum.value                  = matchResults[i]['itemNum'];              
+     UPC.value                      = matchResults[i]['UPC'];                  
+
+     ogPOS360.value                 = matchResults[i]['POS360 DB Name'];             
+     ogCRE.value                    = matchResults[i]['CRE Name'];                
+     ogCREPlus.value                = matchResults[i]['CRE Name + Extra'];            
+     ogDrizly.value                 = matchResults[i]['Drizly Name'];            
+
+
+     cleanPOS360.value              = matchResults[i]['Clean POS360 DB Name'];          
+     cleanCRE.value                 = matchResults[i]['Clean CRE Name'];             
+     cleanCREPlus.value             = matchResults[i]['Clean CRE Name + Extra'];         
+     cleanDrizly.value              = matchResults[i]['Clean Drizly Name'  ];          
+
+     ogCREResults.value             = matchResults[i]['Result OG POS & CRE'];         
+     ogCREPlusResults.value         = matchResults[i]['Result OG POS & CRE Extra'];     
+     ogDrizlyResults.value          = matchResults[i]['Result OG  POS & Drizly'];      
+
+     cleanCREResults.value          = matchResults[i]['Clean Result OG POS & CRE'];      
+     cleanCREPlusResults.value      = matchResults[i]['Clean Result OG POS & CRE Extra'];  
+     cleanDrizlyResults.value       = matchResults[i]['Clean Result OG  POS & Drizly'];   
+
 
 }
 await workbook.xlsx.writeFile(

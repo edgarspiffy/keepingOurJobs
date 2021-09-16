@@ -1,12 +1,11 @@
 import ExcelJS      from 'exceljs';
 import excelToJson  from 'convert-excel-to-json';
-import formatString from './formatString';
-import dataMatch    from './dataMatch';
-
-
+import stringFormat from './stringFormat.js';
+import stringInfo   from './stringInfo.js';
+// import dataMatch    from './dataMatch';
 
 const excelData = excelToJson({
-    sourceFile: './excel/AllData.xlsx',
+    sourceFile: './excel/POS360 Product Data.xlsx',
     header:{
         rows: 1
     },
@@ -14,58 +13,96 @@ const excelData = excelToJson({
         A: 'itemNum',
         B: 'UPC',
         C: 'POS360 DB Name',
-        D: 'Drizly Name'
+        D: 'Drizly Name',
+        E: 'Item Category'
     }
 })['Sheet1'];
 
-const matchResults =[];
+const generateCleanString = function(string){
+    if(string === undefined){string = "";}
+    string = stringFormat.basicCleaning(string);
+    string = stringFormat.removeAccents(string);
+    string = stringFormat.removeVolumeSize(string);
+    string = stringFormat.removePackSize(string);
+    string = stringFormat.removeNumbersFromString(string);
+    string = stringFormat.removeFillerWords(string);
+    return string;
+}
 
+const findSVolumeSize = function(string){
+    if(string === undefined){string = "";}
+    string = stringFormat.basicCleaning(string);
+    string = stringInfo.findVolumeSize(string);
+    string = stringFormat.removeAdditionalWhiteSpace(string);
+    return string;
+}
 
+const findPackSize = function(string){
+    if(string === undefined){string = "";}
+    string = stringFormat.basicCleaning(string);
+    string = stringInfo.findPackSize(string);
+    string = stringFormat.removeAdditionalWhiteSpace(string);
+    string = stringFormat.removePackSizeWords(string);
+    return string;
+}
+
+const findNumbersInString = function(string){
+    if(string === undefined){string = "";}
+    string = stringFormat.basicCleaning(string);
+    string = stringInfo.findNumbersInString(string);
+    return string;
+}
 
 
 
 const compareFunction = (excelData)=>{
-    for(let i = 0; i < excelData.length;i++){
-    
-        let productA = excelData[i]['POS360 DB Name'];
-        let productB = excelData[i]['Drizly Name'];
+    for(let i = 0; i < 35;i++){
 
-        //return string breakdown
-        productA = stringFormatting.cleanString(productA);
-        productB = stringFormatting.cleanString(productB);
+        let productA = generateCleanString(excelData[i]['POS360 DB Name']);
+        let productB = generateCleanString(excelData[i]['Drizly Name']);
+        console.log(productA);
+        console.log(productB);
+
+
+    }
+}
+compareFunction(excelData);
+
+
+
         // console.log(productA);
         // console.log(productB);
 
         //
-        let stringMatchPercentage = comparingFormuals.matchPercentage(productA['name'],productB['name']);
-        let packSizeMatch         = comparingFormuals.checkIfMatch(productA['packSize'],productB['packSize']);
-        let volumeSizeMatch       = comparingFormuals.checkIfMatch(productA['volumeSize'],productB['volumeSize']);
-        let numbersMatch          = comparingFormuals.checkNumMatch(productA['nameNums'],productB['nameNums']);
+        // let stringMatchPercentage = comparingFormuals.matchPercentage(productA['name'],productB['name']);
+        // let packSizeMatch         = comparingFormuals.checkIfMatch(productA['packSize'],productB['packSize']);
+        // let volumeSizeMatch       = comparingFormuals.checkIfMatch(productA['volumeSize'],productB['volumeSize']);
+        // let numbersMatch          = comparingFormuals.checkNumMatch(productA['nameNums'],productB['nameNums']);
         // console.log(numbersMatch);
 
 
         // console.log(`pack size match ${packSizeMatch}`);
         // console.log(`volume size match ${volumeSizeMatch}`);
 
-        let results = {
-            'UPC':excelData[i]['UPC'],
-            'itemNum':excelData[i]['itemNum'],
-            'POS360 Name':productA['name'],
-            'Drizly Name':productB['name'],
-            'POS360 Pack Size':productA['packSize'],
-            'Drizly Pack Size':productB['packSize'],
-            'POS360 Pack Volume':productA['volumeSize'],
-            'Drizly Pack Volume':productB['volumeSize'],
-            'POS360 Num':productA['nameNums'],
-            'Drizly Num':productB['nameNums'],
-            'stringMatch':stringMatchPercentage,
-            'packSizeMatch':packSizeMatch,
-            'volumeSizeMatch':volumeSizeMatch,
-            'numMatch':numbersMatch
-        }
-        matchResults.push(results);
-    }
-}
+    //     let results = {
+    //         'UPC':excelData[i]['UPC'],
+    //         'itemNum':excelData[i]['itemNum'],
+    //         'POS360 Name':productA['name'],
+    //         'Drizly Name':productB['name'],
+    //         'POS360 Pack Size':productA['packSize'],
+    //         'Drizly Pack Size':productB['packSize'],
+    //         'POS360 Pack Volume':productA['volumeSize'],
+    //         'Drizly Pack Volume':productB['volumeSize'],
+    //         'POS360 Num':productA['nameNums'],
+    //         'Drizly Num':productB['nameNums'],
+    //         'stringMatch':stringMatchPercentage,
+    //         'packSizeMatch':packSizeMatch,
+    //         'volumeSizeMatch':volumeSizeMatch,
+    //         'numMatch':numbersMatch
+    //     }
+    //     matchResults.push(results);
+    // }
+
 
         
 
@@ -131,4 +168,4 @@ const compareFunction = (excelData)=>{
 //     `./excel/QCTemplateResults.xlsx`
 // );
 
-console.log('script ran');
+// console.log('script ran');

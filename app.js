@@ -30,6 +30,7 @@ const generateCleanString = function(string){
 
 const findVolumeSize = function(string){
     string = stringFormat.basicCleaning(string);
+    string = stringFormat.convertSizeToOz(string);
     string = stringInfo.findVolumeSize(string);
     return string;
 }
@@ -72,14 +73,10 @@ const doStringNumbersMatch = function(stringA,stringB){
 const doesVolumeSizeMatch = function(stringA,stringB){
     stringA = findVolumeSize(stringA);
     stringB = findVolumeSize(stringB);
-    stringA = stringFormat.convertSizeToOz(stringA);
-    stringB = stringFormat.convertSizeToOz(stringB);
     let volumeSizeMatch = stringMatch.checkForVolumeMatch(stringA,stringB);
     return volumeSizeMatch;
     
 }
-
-
 
 const workbook = new ExcelJS.Workbook();
 await workbook.xlsx.readFile(
@@ -88,7 +85,6 @@ await workbook.xlsx.readFile(
 const sheet = workbook.getWorksheet('Sheet1');
 const rows = sheet.getRows(2, excelData.length);
 for (let i = 0; i < excelData.length; i++){
-
 
     const itemNum           = rows[i].getCell('A');
     const UPC               = rows[i].getCell('B');
@@ -141,10 +137,8 @@ for (let i = 0; i < excelData.length; i++){
     doNumbersMatch.value    = doStringNumbersMatch(stringA,stringB);    
     doPackSizeMatch.value   = doesPacksizeMatch(stringA,stringB);
     doVolumesMatch.value    = doesVolumeSizeMatch(stringA,stringB);
- 
 }
 await workbook.xlsx.writeFile(
     `./excel/QC - Results.xlsx`
 );
-
 console.log('script ran');

@@ -26,12 +26,14 @@ export default {
     },
     convertSizeToOz(string){
         if(string === null){return null}
+        string = string.replace('250ml','8.5oz');
         string = string.replace('296ml','10oz');
         string = string.replace('350ml','11.8oz');
         string = string.replace('355ml','12oz');
         string = string.replace('375ml','12.9oz');
         string = string.replace('500ml','16.9oz');
         string = string.replace('750ml','25.4oz');
+        string = string.replace('800ml','27.1oz');
         string = string.replace('850ml','28.7oz');
         string = string.replace('1000ml','33.8oz');
         string = string.replace('1250ml','42.3oz');

@@ -25,26 +25,22 @@ const generateCleanString = function(string){
     string = stringFormat.removePackSize(string);
     string = stringFormat.removeNumbersFromString(string);
     string = stringFormat.removeFillerWords(string);
-    string = stringFormat.removeAdditionalWhiteSpace(string);
     return string;
 }
 
 const findVolumeSize = function(string){
     string = stringFormat.basicCleaning(string);
     string = stringInfo.findVolumeSize(string);
-    string = stringFormat.removeAdditionalWhiteSpace(string);
     return string;
 }
 
 const findPackSize = function(string){
     string = stringFormat.basicCleaning(string);
     string = stringInfo.findPackSize(string);
-    string = stringFormat.removePackSizeWords(string);
-    string = stringFormat.removeAdditionalWhiteSpace(string);
     return string;
 }
 
-const findStringNumbers = function(string){
+const findNumbersInString = function(string){
     string = stringFormat.basicCleaning(string);
     string = stringFormat.removeVolumeSize(string);
     string = stringFormat.removePackSize(string);
@@ -67,8 +63,8 @@ const doesPacksizeMatch = function(stringA,stringB){
 }
 
 const doStringNumbersMatch = function(stringA,stringB){
-    stringA = findStringNumbers(stringA);
-    stringB = findStringNumbers(stringB);
+    stringA = findNumbersInString(stringA);
+    stringB = findNumbersInString(stringB);
     let numbersMatch = stringMatch.checkIfNumbersMatch(stringA,stringB);
     return numbersMatch;
 }
@@ -76,6 +72,8 @@ const doStringNumbersMatch = function(stringA,stringB){
 const doesVolumeSizeMatch = function(stringA,stringB){
     stringA = findVolumeSize(stringA);
     stringB = findVolumeSize(stringB);
+    stringA = stringFormat.convertSizeToOz(stringA);
+    stringB = stringFormat.convertSizeToOz(stringB);
     let volumeSizeMatch = stringMatch.checkForVolumeMatch(stringA,stringB);
     return volumeSizeMatch;
     
@@ -85,7 +83,7 @@ const doesVolumeSizeMatch = function(stringA,stringB){
 
 const workbook = new ExcelJS.Workbook();
 await workbook.xlsx.readFile(
-    './excel/QCTemplateResults.xlsx'
+    './excel/QC - Results.xlsx'
 );
 const sheet = workbook.getWorksheet('Sheet1');
 const rows = sheet.getRows(2, excelData.length);
@@ -130,8 +128,8 @@ for (let i = 0; i < excelData.length; i++){
     drizlyNameClean.value   = generateCleanString(stringB);  
     
 
-    pos360Num.value         = findStringNumbers(stringA);                
-    drizlyNum.value         = findStringNumbers(stringB);        
+    pos360Num.value         = findNumbersInString(stringA);                
+    drizlyNum.value         = findNumbersInString(stringB);        
 
     pos360PackSize.value    = findPackSize(stringA);  
     drizlyPackSize.value    = findPackSize(stringB);    
@@ -146,7 +144,7 @@ for (let i = 0; i < excelData.length; i++){
  
 }
 await workbook.xlsx.writeFile(
-    `./excel/QCTemplateResults.xlsx`
+    `./excel/QC - Results.xlsx`
 );
 
 console.log('script ran');

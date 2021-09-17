@@ -6,7 +6,8 @@ export default {
             let lookForSizeIdentifiers = new RegExp(`(\\s+[0-9]+\\s+${sizeIdentifiers[i]})|(\\s+[0-9]+${sizeIdentifiers[i]})|(\\s+[0-9]+\\.[0-9]+${sizeIdentifiers[i]})|(\\s+[0-9]+\\.[0-9]+\\s+${sizeIdentifiers[i]})`);
             if(lookForSizeIdentifiers.test(string)){
                 volumeSize = lookForSizeIdentifiers.exec(string)[0];
-                volumeSize = volumeSize.replace(/\s/g,""); 
+                volumeSize = volumeSize.replace(/\s/g,"");
+                volumeSize = volumeSize.trim(); 
                 break;
             }else{
                 volumeSize = null;
@@ -21,6 +22,9 @@ export default {
             let lookForPackSize = RegExp(`(\\s+[0-9]+\\s+${packIdentifiers[i]})|(\\s+[0-9]+${packIdentifiers[i]})|(\\s+[0-9]+\\.[0-9]+${packIdentifiers[i]})|(\\s+[0-9]+\\.[0-9]+\\s+${packIdentifiers[i]})|(\\s+[0-9]+\\s+${packIdentifiers[i]})|(\\s+[0-9]+${packIdentifiers[i]})`);
             if(lookForPackSize.test(string)){
                 packSize = lookForPackSize.exec(string)[0];
+                packSize = packSize.replace(/\s/g,""); 
+                packSize = packSize.replace(packIdentifiers[i],'');
+                packSize = packSize.trim();
                 break;
             }else{
                 packSize = null;  
@@ -33,7 +37,8 @@ export default {
         let numbersInString = [];
         for(let i = 0;i< string.length;i++){
             if(Number(string[i])){
-                numbersInString.push(string[i]);
+                let number = string[i].trim();
+                numbersInString.push(number);
             }
         }
         if(numbersInString.length === 0){

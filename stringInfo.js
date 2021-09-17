@@ -9,8 +9,10 @@ export default {
                 break;
             }else{
                 volumeSize = null;
+                return null;
             }
         }
+        volumeSize = volumeSize.replace(/\s/g,""); 
         return volumeSize;
     },
     findPackSize:function(string){
@@ -23,6 +25,7 @@ export default {
                 break;
             }else{
                 packSize = null;  
+                return null;
             }
         }
         return packSize;
@@ -36,7 +39,7 @@ export default {
             }
         }
         if(numbersInString.length === 0){
-            numbersInString = null;
+            return null;
         }
         return numbersInString;
     },

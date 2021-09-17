@@ -1,92 +1,185 @@
+export default {
+    getMatchPercentage:function(stringA,stringB){
+        if(stringA === '' || stringB === ''){return 0}
+        let scoreAtoB = this.getWordMatchScore(stringA,stringB);
+        let scoreBtoA = this.getWordMatchScore(stringB,stringA);
+        let matchPercentage = (scoreAtoB + scoreBtoA)/2
 
+        let scoreAtoBWeighted = this.getWeightedWordMatchScore(stringA,stringB);
+        let scoreBtoAWeighted = this.getWeightedWordMatchScore(stringB,stringA);
+        let matchPercentageWeighted = (scoreAtoBWeighted + scoreBtoAWeighted)/2
 
-const dataMatch = {
-    getMatchPercentage:function(productA,productB){
+        let finalMatchPercentageScore = (matchPercentage + matchPercentageWeighted)/2
+
+        return finalMatchPercentageScore;
+    },
+    checkIfNumbersMatch:function(stringA,stringB){
+        if(stringA === null && stringB === null){return true;}
+        if(stringA === null && stringB !== null){return false;}
+        if(stringA !== null && stringB === null){return false;}
+        if(stringA.length !== stringB.length){return false;}
+        stringA = stringA.join(" ");
+        stringB = stringB.join(" ");
+        let scoreAtoB = this.getWordMatchScore(stringA,stringB);
+        let scoreBtoA = this.getWordMatchScore(stringB,stringA);
+        let matchPercentage = (scoreAtoB + scoreBtoA)/2
+        if(matchPercentage !== 100){
+            return false;
+        }else{
+            return true;
+        }
+    },
+    
+    getScore1:function(stringA,stringB){ //leave for troubleshooting
+        let scoreAtoB = this.getWordMatchScore(stringA,stringB);
+        // let scoreBtoA = this.getWordMatchScore(stringB,stringA);
+        // let matchPercentage = (scoreAtoB + scoreBtoA)/2
+        return matchPercentage;
+    },
+    getScore2:function(stringA,stringB){ //leave for troubleshooting
+  
+        let scoreAtoBWeighted = this.getWeightedWordMatchScore(stringA,stringB);
+        let scoreBtoAWeighted = this.getWeightedWordMatchScore(stringB,stringA);
+        let matchPercentageWeighted = (scoreAtoBWeighted + scoreBtoAWeighted)/2
+        return matchPercentageWeighted;
+    },
+    getWordMatchScore:function(stringA,stringB){
+        stringA = stringA.split(" ");
+        stringB = stringB.split(" ");
         let matchwingWordsCountAtoB = 0;
         let arraySubtractorAtoB = 0; //when a word gets concatenated and a match returns we need to subtract it from word count
-        for(let j = 0; j < productA.length;j++){
-            for(let m = 0; m < productB.length; m++){
-                if(productA[j] === productB[m]){
+        for(let j = 0; j < stringA.length;j++){
+            for(let m = 0; m < stringB.length; m++){
+                if(stringA[j] === stringB[m]){
                     matchwingWordsCountAtoB++;
                     break;
                 }
-                if(`${productA[j]}.` === productB[m]){
+                if(`${stringA[j]}.` === stringB[m]){
                     matchwingWordsCountAtoB++;
                     break;
                 }
-                if(`${productA[j]}s` === productB[m]){
+                if(`${stringA[j]}s` === stringB[m]){
                     matchwingWordsCountAtoB++;
                     break;
                 }
-                if(productA[j].slice(0, -1) === productB[m]){
+                if(stringA[j].slice(0, -1) === stringB[m]){
                     matchwingWordsCountAtoB++;
                     break;
                 }
-                if(`${productA[j]}${productA[j+1]}` === productB[m]){
+                if(`${stringA[j]}${stringA[j+1]}` === stringB[m]){
                     matchwingWordsCountAtoB++;
                     arraySubtractorAtoB++
                     j++
                     break;
                 }
-                if(productA[j] === `${productB[m]}${productB[m+1]}`){
+                if(stringA[j] === `${stringB[m]}${stringB[m+1]}`){
                     matchwingWordsCountAtoB++;
                     break;
                 }
                 //This usually catches brands that are 2 letters with an & in the middle
-                if(`${productA[j]}${productA[j+1]}${productA[j+2]}` === productB[m]){
+                if(`${stringA[j]}${stringA[j+1]}${stringA[j+2]}` === stringB[m]){
                     matchwingWordsCountAtoB++;
                     j+=2
                     arraySubtractorAtoB+=2;
                     break;
                 }
-                if(productA[j] === `${productB[m]}${productB[m+1]}${productB[m+2]}`){
+                if(stringA[j] === `${stringB[m]}${stringB[m+1]}${stringB[m+2]}`){
                     matchwingWordsCountAtoB++;
                     break;
                 }
             }
         }
-        let accuracyAtoB = (matchwingWordsCountAtoB/(productA.length - arraySubtractorAtoB))*100;
+        let accuracyAtoB = (matchwingWordsCountAtoB/(stringA.length - arraySubtractorAtoB))*100;
         return accuracyAtoB;
     },
-    matchPercentage:function(productA,productB){
-        let scoreAtoB = this.getMatchPercentage(productA,productB);
-        let scoreBtoA = this.getMatchPercentage(productB,productA);
-        let matchPercentage = (scoreAtoB + scoreBtoA)/2
-        return matchPercentage;
-    },
-    checkNumMatch:function(a,b){
-        if(a === null && b === null){
-            return true;
-        }
-        if(a === null && b !== null){
-            return false;
-        }
-        if(a !== null && b === null){
-            return false;
-        }
+    getWeightedWordMatchScore:function(stringA,stringB){
+        let totalCharacterCount = stringA.replace(/\s+/g,'').length;
+        stringA = stringA.split(" ");
+        stringB = stringB.split(" ");
         let matchwingWordsCountAtoB = 0;
-        for(let j = 0; j < a.length;j++){
-            for(let m = 0; m < b.length; m++){
-                if(a[j] === b[m]){
-                    matchwingWordsCountAtoB++;
+        let arraySubtractorAtoB = 0; //when a word gets concatenated and a match returns we need to subtract it from word count
+        for(let j = 0; j < stringA.length;j++){
+            for(let m = 0; m < stringB.length; m++){
+                if(stringA[j] === stringB[m]){
+                    let wordCharCount = stringA[j].length;
+                    let weightedScore = wordCharCount/totalCharacterCount;
+                    matchwingWordsCountAtoB+=weightedScore;
+                    break;
+                }
+                if(`${stringA[j]}.` === stringB[m]){
+                    let wordCharCount = stringA[j].length;
+                    let weightedScore = wordCharCount/totalCharacterCount;
+                    matchwingWordsCountAtoB+=weightedScore;
+                    break;
+                }
+                if(`${stringA[j]}s` === stringB[m]){
+                    let wordCharCount = stringA[j].length;
+                    let weightedScore = wordCharCount/totalCharacterCount;
+                    matchwingWordsCountAtoB+=weightedScore;
+                    break;
+                }
+                if(stringA[j].slice(0, -1) === stringB[m]){
+                    let wordCharCount = stringA[j].length;
+                    let weightedScore = wordCharCount/totalCharacterCount;
+                    matchwingWordsCountAtoB+=weightedScore;
+                    break;
+                }
+                if(`${stringA[j]}${stringA[j+1]}` === stringB[m]){
+                    let wordCharCount = `${stringA[j]}${stringA[j+1]}`.length;
+                    let weightedScore = wordCharCount/totalCharacterCount;
+                    matchwingWordsCountAtoB+=weightedScore;
+                    arraySubtractorAtoB++ //CHECK THIS
+                    j++
+                    break;
+                }
+                if(stringA[j] === `${stringB[m]}${stringB[m+1]}`){
+                    let wordCharCount = stringA[j].length;
+                    let weightedScore = wordCharCount/totalCharacterCount;
+                    matchwingWordsCountAtoB+=weightedScore;
+                    break;
+                }
+                //This usually catches brands that are 2 letters with an & in the middle
+                if(`${stringA[j]}${stringA[j+1]}${stringA[j+2]}` === stringB[m]){
+                    let wordCharCount = `${stringA[j]}${stringA[j+1]}${stringA[j+2]}`.length;
+                    let weightedScore = wordCharCount/totalCharacterCount;
+                    matchwingWordsCountAtoB+=weightedScore;
+                    j+=2
+                    arraySubtractorAtoB+=2; //CHECK THIS
+                    break;
+                }
+                if(stringA[j] === `${stringB[m]}${stringB[m+1]}${stringB[m+2]}`){
+                    let weightedScore = stringA[j].length/totalCharacterCount;
+                    matchwingWordsCountAtoB+=weightedScore;
                     break;
                 }
             }
         }
-        let accuracyAtoB = (matchwingWordsCountAtoB/(a.length))*100;
+        let accuracyAtoB = matchwingWordsCountAtoB * 100;
+        accuracyAtoB = Math.round((accuracyAtoB + Number.EPSILON) * 100) / 100
+        return accuracyAtoB;
+    },
+    checkIfNumbersMatch1:function(stringA,stringB){
+        if(stringA === null && stringB === null){return true;}
+        if(stringA === null && stringB !== null){return false;}
+        if(stringA !== null && stringB === null){return false;}
+
+        let numbersMatchCount = 0;
+        for(let j = 0; j < stringA;j++){
+            for(let m = 0; m < stringB.length; m++){
+                if(stringA[j] === stringB[m]){
+                    numbersMatchCount++;
+                    break;
+                }
+            }
+        }
+        let accuracyAtoB = (numbersMatchCount/(stringA.length))*100;
         if(accuracyAtoB !== 100){
             return false;
         }else{
             return true;
         }
     },
-    checkIfMatch:(productA,productB)=>{
-        if(productA === productB){
-            return true;
-        }else{
-            return false;
-        }
+    checkIfEqual:(stringA,stringB)=>{
+        return stringA === stringB;
     },
 }
-
-module.exports = dataMatch;

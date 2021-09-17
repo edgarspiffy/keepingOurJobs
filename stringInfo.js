@@ -3,16 +3,15 @@ export default {
         let volumeSize = undefined;
         let sizeIdentifiers = ['oz','ml','l'];
         for(let i = 0; i < sizeIdentifiers.length; i++){
-            let lookForSizeIdentifiers = RegExp(`(\\s+[0-9]+\\s+${sizeIdentifiers[i]})|(\\s+[0-9]+${sizeIdentifiers[i]})|(\\s+[0-9]+\\.[0-9]+${sizeIdentifiers[i]})|(\\s+[0-9]+\\.[0-9]+\\s+${sizeIdentifiers[i]})`);
+            let lookForSizeIdentifiers = new RegExp(`(\\s+[0-9]+\\s+${sizeIdentifiers[i]})|(\\s+[0-9]+${sizeIdentifiers[i]})|(\\s+[0-9]+\\.[0-9]+${sizeIdentifiers[i]})|(\\s+[0-9]+\\.[0-9]+\\s+${sizeIdentifiers[i]})`);
             if(lookForSizeIdentifiers.test(string)){
                 volumeSize = lookForSizeIdentifiers.exec(string)[0];
+                volumeSize = volumeSize.replace(/\s/g,""); 
                 break;
             }else{
                 volumeSize = null;
-                return null;
             }
         }
-        volumeSize = volumeSize.replace(/\s/g,""); 
         return volumeSize;
     },
     findPackSize:function(string){
@@ -25,7 +24,6 @@ export default {
                 break;
             }else{
                 packSize = null;  
-                return null;
             }
         }
         return packSize;

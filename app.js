@@ -73,6 +73,16 @@ const doStringNumbersMatch = function(stringA,stringB){
     return numbersMatch;
 }
 
+const doesVolumeSizeMatch = function(stringA,stringB){
+    stringA = findVolumeSize(stringA);
+    stringB = findVolumeSize(stringB);
+    let volumeSizeMatch = stringMatch.checkForVolumeMatch(stringA,stringB);
+    return volumeSizeMatch;
+    
+}
+
+
+
 const workbook = new ExcelJS.Workbook();
 await workbook.xlsx.readFile(
     './excel/QCTemplateResults.xlsx'
@@ -104,7 +114,7 @@ for (let i = 0; i < excelData.length; i++){
     const stringMatch       = rows[i].getCell('N');
     const doNumbersMatch    = rows[i].getCell('O');
     const doPackSizeMatch   = rows[i].getCell('P');
-    // const doVolumesMatch    = rows[i].getCell('Q');
+    const doVolumesMatch    = rows[i].getCell('Q');
 
     const stringA           = excelData[i]['POS360 Name'];
     const stringB           = excelData[i]['Drizly Name']
@@ -132,7 +142,7 @@ for (let i = 0; i < excelData.length; i++){
     stringMatch.value       = generateStringMatchScore(stringA,stringB);
     doNumbersMatch.value    = doStringNumbersMatch(stringA,stringB);    
     doPackSizeMatch.value   = doesPacksizeMatch(stringA,stringB);
-    // doVolumesMatch.value    = 
+    doVolumesMatch.value    = doesVolumeSizeMatch(stringA,stringB);
  
 }
 await workbook.xlsx.writeFile(

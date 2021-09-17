@@ -29,7 +29,13 @@ export default {
             return true;
         }
     },
-    
+    checkForVolumeMatch:function(stringA,stringB){
+        if(this.checkIfEqual(stringA,stringB)){
+            return true;
+        }else{
+            return false;
+        }
+    },
     getScore1:function(stringA,stringB){ //leave for troubleshooting
         let scoreAtoB = this.getWordMatchScore(stringA,stringB);
         // let scoreBtoA = this.getWordMatchScore(stringB,stringA);

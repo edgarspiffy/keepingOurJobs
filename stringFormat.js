@@ -24,28 +24,63 @@ export default {
         string = string.replace(/\u00F1/g,'n');           // ñ to n
         return string;
     },
-    convertSizeToOz(string){
+    stringConversion:function(string){
         if(string === null){return null}
-        string = string.replace('250ml','8.5oz');
-        string = string.replace('296ml','10oz');
-        string = string.replace('350ml','11.8oz');
-        string = string.replace('355ml','12oz');
-        string = string.replace('375ml','12.9oz');
-        string = string.replace('500ml','16.9oz');
-        string = string.replace('750ml','25.4oz');
-        string = string.replace('800ml','27.1oz');
-        string = string.replace('850ml','28.7oz');
-        string = string.replace('1000ml','33.8oz');
-        string = string.replace('1250ml','42.3oz');
-        string = string.replace('1500ml','50.7oz');
+        // string = string.replace(/\b100ml/,'3.4oz');
+        // string = string.replace(/\b200ml/,'6.8oz');
+        // string = string.replace(/\b250ml/,'8.5oz');
+        // string = string.replace(/\b296ml/,'10oz');
+        // string = string.replace(/\b350ml/,'11.8oz');
+        // string = string.replace(/\b355ml/,'12oz');
+        // string = string.replace(/\b375ml/,'12.9oz');
+        // string = string.replace(/\b500ml/,'16.9oz');
+        // string = string.replace(/\b750ml/,'25.4oz');
+        // string = string.replace(/\b800ml/,'27.1oz');
+        // string = string.replace(/\b850ml/,'28.7oz');
+        // string = string.replace(/\b1000ml/,'33.8oz');
+        // string = string.replace(/\b1250ml/,'42.3oz');
+        // string = string.replace(/\b1500ml/,'50.7oz');
 
-        string = string.replace('.5l','16.9oz');
-        string = string.replace('.75l','25.4oz');
-        string = string.replace('.85l','28.7oz');
-        string = string.replace('1l','33.8oz');
-        string = string.replace('1.25l','42.3oz');
-        string = string.replace('1.5l','50.7oz');
-        
+        // string = string.replace(/\b\\.5l/,'16.9oz');
+        // string = string.replace(/\b\\.75l/,'25.4oz');
+        // string = string.replace(/\b\\.85l/,'28.7oz');
+        // string = string.replace(/\b\\.1l/,'33.8oz');
+        // string = string.replace(/\b1\\.25l/,'42.3oz');
+        // string = string.replace(/\b1\\.5l/,'50.7oz');
+        // string = string.replace(/\b1\\.75l/,'59.2oz');
+        // string = string.replace(/\b2l/,'67.6oz');
+
+        if(/ml/.test(string)){
+            string = parseFloat(string);
+            string = string * .0338;
+            string = Math.round(10 * string)/10;     
+            string = `${string}oz`;
+        }
+        if(/l/.test(string)){
+            string = parseFloat(string);
+            string = string * 33.814
+            string = Math.round(10 * string)/10;     
+            string = `${string}oz`;
+        }
+
+        return string;
+    },
+    dynamicConversion:function(string){
+        if(string === NaN){
+            return null;
+        }
+        if(/ml/.test(string)){
+            string = parseFloat(string);
+            string = string * .0338;
+            string = Math.round(10 * string)/10;     
+            string = `${string}oz`;
+        }
+        if(/l/.test(string)){
+            string = parseFloat(string);
+            string = string * 33.814
+            string = Math.round(10 * string)/10;     
+            string = `${string}oz`;
+        }
         return string;
     },
     removeVolumeSize:function(string){

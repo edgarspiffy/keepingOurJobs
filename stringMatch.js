@@ -30,27 +30,16 @@ export default {
         }
     },
     checkForVolumeMatch:function(stringA,stringB){
-        
-
-
-        if(this.checkIfEqual(stringA,stringB)){
+        if(stringA === stringB){return true;}
+        stringA = parseFloat(stringA);
+        stringB = parseFloat(stringB);
+        let volumeDifference = Math.abs(stringA - stringB);
+        volumeDifference =  Math.round(10 * volumeDifference)/10;  
+        if(volumeDifference <= .3){
             return true;
         }else{
             return false;
         }
-    },
-    getScore1:function(stringA,stringB){ //leave for troubleshooting
-        let scoreAtoB = this.getWordMatchScore(stringA,stringB);
-        // let scoreBtoA = this.getWordMatchScore(stringB,stringA);
-        // let matchPercentage = (scoreAtoB + scoreBtoA)/2
-        return matchPercentage;
-    },
-    getScore2:function(stringA,stringB){ //leave for troubleshooting
-  
-        let scoreAtoBWeighted = this.getWeightedWordMatchScore(stringA,stringB);
-        let scoreBtoAWeighted = this.getWeightedWordMatchScore(stringB,stringA);
-        let matchPercentageWeighted = (scoreAtoBWeighted + scoreBtoAWeighted)/2
-        return matchPercentageWeighted;
     },
     getWordMatchScore:function(stringA,stringB){
         stringA = stringA.split(" ");
@@ -167,7 +156,7 @@ export default {
         accuracyAtoB = Math.round((accuracyAtoB + Number.EPSILON) * 100) / 100
         return accuracyAtoB;
     },
-    checkIfNumbersMatch1:function(stringA,stringB){
+    checkIfNumbersMatch:function(stringA,stringB){
         if(stringA === null && stringB === null){return true;}
         if(stringA === null && stringB !== null){return false;}
         if(stringA !== null && stringB === null){return false;}

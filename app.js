@@ -154,13 +154,13 @@ const doesVolumeSizeMatch = function(stringA,stringB){
 //     `./excel/QC - Results.xlsx`
 // );
 
-let count = 0;
-for (let i = 0; i < excelData.length; i++){
-    const stringA = excelData[i]['POS360 Name'];
-    const stringB = excelData[i]['Drizly Name'];
-    if(generateStringMatchScore(stringA,stringB) !== 0 && doesVolumeSizeMatch(stringA,stringB) === false){
-        count++
-    }
-}
-console.log(count);
+// let count = 0;
+// for (let i = 0; i < excelData.length; i++){
+//     const stringA = excelData[i]['POS360 Name'];
+//     const stringB = excelData[i]['Drizly Name'];
+//     if(generateStringMatchScore(stringA,stringB) !== 0 && doesVolumeSizeMatch(stringA,stringB) === false){
+//         count++
+//     }
+// }
+// console.log(count);
 console.log('script ran');

@@ -29,13 +29,16 @@ export default {
             return true;
         }
     },
-    checkForVolumeMatch:function(stringA,stringB){
+    checkForVolumeMatch:function(stringA,stringB,ozAllowance){
         if(stringA === stringB){return true;}
         stringA = parseFloat(stringA);
         stringB = parseFloat(stringB);
         let volumeDifference = Math.abs(stringA - stringB);
+   
         volumeDifference =  Math.round(10 * volumeDifference)/10;  
-        if(volumeDifference <= .3){
+        console.log(volumeDifference);
+        console.log(ozAllowance);
+        if(volumeDifference <= ozAllowance){
             return true;
         }else{
             return false;

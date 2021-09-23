@@ -18,8 +18,6 @@ const excelData = excelToJson({
     }
 })['Sheet1'];
 
-
-
 const generateCleanString = function(string){
     string = stringFormat.basicCleaning(string);
     string = stringFormat.removeAccents(string);
@@ -33,8 +31,6 @@ const generateCleanString = function(string){
 const findVolumeSize = function(string){
     string = stringFormat.basicCleaning(string);
     string = stringInfo.findVolumeSize(string);
-    // string = stringFormat.hardSizeConversion(string);
-    // string = stringFormat.dynamicConversion(string);
     return string;
 }
 
@@ -73,21 +69,17 @@ const doStringNumbersMatch = function(stringA,stringB){
     return numbersMatch;
 }
 
-// let stringA = 'Hi Edgar This is a 1.6 oz volume';
-// let stringB = 'Hi Edgar This is a 1.3oz volume';
-
-const doesVolumeSizeMatch = function(stringA,stringB){
+const doesVolumeSizeMatch = function(stringA,stringB,ozAllowance){
     stringA = findVolumeSize(stringA);
     stringB = findVolumeSize(stringB);
     stringA = stringFormat.stringConversion(stringA);
     stringB = stringFormat.stringConversion(stringB);
-
-    let volumeSizeMatch = stringMatch.checkForVolumeMatch(stringA,stringB);
+    let volumeSizeMatch = stringMatch.checkForVolumeMatch(stringA,stringB,ozAllowance);
     return volumeSizeMatch;
 }
-// doesVolumeSizeMatch(stringA,stringB);
-
-
+// let stringB = 'Super Nice Wine 100ml'
+// let stringA = 'Super Nice Wine 115ml'
+// console.log(doesVolumeSizeMatch(stringA,stringB,.5))
 
 // const workbook = new ExcelJS.Workbook();
 // await workbook.xlsx.readFile(
@@ -121,6 +113,8 @@ const doesVolumeSizeMatch = function(stringA,stringB){
 //     const doNumbersMatch    = rows[i].getCell('O');
 //     const doPackSizeMatch   = rows[i].getCell('P');
 //     const doVolumesMatch    = rows[i].getCell('Q');
+//     const doVolumesMatchDot3    = rows[i].getCell('R');
+//     const doVolumesMatchDot5    = rows[i].getCell('S');
 
 //     const stringA           = excelData[i]['POS360 Name'];
 //     const stringB           = excelData[i]['Drizly Name']
@@ -148,7 +142,9 @@ const doesVolumeSizeMatch = function(stringA,stringB){
 //     stringMatch.value       = generateStringMatchScore(stringA,stringB);
 //     doNumbersMatch.value    = doStringNumbersMatch(stringA,stringB);    
 //     doPackSizeMatch.value   = doesPacksizeMatch(stringA,stringB);
-//     doVolumesMatch.value    = doesVolumeSizeMatch(stringA,stringB);
+//     doVolumesMatch.value    = doesVolumeSizeMatch(stringA,stringB,0);
+//     doVolumesMatchDot3.value    = doesVolumeSizeMatch(stringA,stringB,.3);
+//     doVolumesMatchDot5.value    = doesVolumeSizeMatch(stringA,stringB,.5);
 // }
 // await workbook.xlsx.writeFile(
 //     `./excel/QC - Results.xlsx`
@@ -158,9 +154,11 @@ const doesVolumeSizeMatch = function(stringA,stringB){
 // for (let i = 0; i < excelData.length; i++){
 //     const stringA = excelData[i]['POS360 Name'];
 //     const stringB = excelData[i]['Drizly Name'];
-//     if(generateStringMatchScore(stringA,stringB) !== 0 && doesVolumeSizeMatch(stringA,stringB) === false){
-//         count++
+//     if(!doesVolumeSizeMatch(stringA,stringB,0)){
+//         if(generateStringMatchScore(stringA,stringB) !== 0 ){
+//             count++;
 //     }
+// }
 // }
 // console.log(count);
 console.log('script ran');

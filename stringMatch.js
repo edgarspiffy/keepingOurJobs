@@ -36,8 +36,6 @@ export default {
         let volumeDifference = Math.abs(stringA - stringB);
    
         volumeDifference =  Math.round(10 * volumeDifference)/10;  
-        console.log(volumeDifference);
-        console.log(ozAllowance);
         if(volumeDifference <= ozAllowance){
             return true;
         }else{

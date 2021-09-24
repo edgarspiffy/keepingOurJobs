@@ -77,78 +77,77 @@ const doesVolumeSizeMatch = function(stringA,stringB,ozAllowance){
     let volumeSizeMatch = stringMatch.checkForVolumeMatch(stringA,stringB,ozAllowance);
     return volumeSizeMatch;
 }
-// let stringB = 'Super Nice Wine 100ml'
-// let stringA = 'Super Nice Wine 115ml'
-// console.log(doesVolumeSizeMatch(stringA,stringB,.5))
+let stringB = 'Super Nice Wine 100ml'
+let stringA = 'Super Nice Wine 115ml'
+console.log(doesVolumeSizeMatch(stringA,stringB,.5))
 
-// const workbook = new ExcelJS.Workbook();
-// await workbook.xlsx.readFile(
-//     './excel/QC - Template.xlsx'
-// );
+const workbook = new ExcelJS.Workbook();
+await workbook.xlsx.readFile(
+    './excel/QC - Template.xlsx'
+);
 
-// const sheet = workbook.getWorksheet('Sheet1');
-// const rows = sheet.getRows(2, excelData.length);
-// for (let i = 0; i < excelData.length; i++){
+const sheet = workbook.getWorksheet('Sheet1');
+const rows = sheet.getRows(2, excelData.length);
+for (let i = 0; i < excelData.length; i++){
 
-//     const itemNum           = rows[i].getCell('A');
-//     const UPC               = rows[i].getCell('B');
-//     const category          = rows[i].getCell('C');   
+    const itemNum           = rows[i].getCell('A');
+    const UPC               = rows[i].getCell('B');
+    const category          = rows[i].getCell('C');   
 
-//     const pos360Name        = rows[i].getCell('D');
-//     const drizlyName        = rows[i].getCell('E');
+    const pos360Name        = rows[i].getCell('D');
+    const drizlyName        = rows[i].getCell('E');
 
-//     const pos360NameClean   = rows[i].getCell('F');
-//     const drizlyNameClean   = rows[i].getCell('G');
+    const pos360NameClean   = rows[i].getCell('F');
+    const drizlyNameClean   = rows[i].getCell('G');
 
-//     const pos360Num         = rows[i].getCell('H');
-//     const drizlyNum         = rows[i].getCell('I');
+    const pos360Num         = rows[i].getCell('H');
+    const drizlyNum         = rows[i].getCell('I');
 
-//     const pos360PackSize    = rows[i].getCell('J');
-//     const drizlyPackSize    = rows[i].getCell('K');
+    const pos360PackSize    = rows[i].getCell('J');
+    const drizlyPackSize    = rows[i].getCell('K');
 
-//     const pos360VolumeSize  =rows[i].getCell('L');
-//     const drizlyVolumeSize  =rows[i].getCell('M');
+    const pos360VolumeSize  =rows[i].getCell('L');
+    const drizlyVolumeSize  =rows[i].getCell('M');
 
-//     const stringMatch       = rows[i].getCell('N');
-//     const doNumbersMatch    = rows[i].getCell('O');
-//     const doPackSizeMatch   = rows[i].getCell('P');
-//     const doVolumesMatch    = rows[i].getCell('Q');
-//     const doVolumesMatchDot3    = rows[i].getCell('R');
-//     const doVolumesMatchDot5    = rows[i].getCell('S');
+    const stringMatch       = rows[i].getCell('N');
+    const doNumbersMatch    = rows[i].getCell('O');
+    const doPackSizeMatch   = rows[i].getCell('P');
+    const doVolumesMatch    = rows[i].getCell('Q');
+    const doVolumesMatchDot3    = rows[i].getCell('R');
+    const doVolumesMatchDot5    = rows[i].getCell('S');
 
-//     const stringA           = excelData[i]['POS360 Name'];
-//     const stringB           = excelData[i]['Drizly Name']
+    const stringA           = excelData[i]['POS360 Name'];
+    const stringB           = excelData[i]['Drizly Name']
 
-//     itemNum.value           = excelData[i]['itemNum'];                  
-//     UPC.value               = excelData[i]['UPC'];  
-//     category.value          = excelData[i]['Item Category'];        
+    itemNum.value           = excelData[i]['itemNum'];                  
+    UPC.value               = excelData[i]['UPC'];  
+    category.value          = excelData[i]['Item Category'];        
 
-//     pos360Name.value        = stringFormat.basicCleaning(stringA);                
-//     drizlyName.value        = stringFormat.basicCleaning(stringB);  
+    pos360Name.value        = stringFormat.basicCleaning(stringA);                
+    drizlyName.value        = stringFormat.basicCleaning(stringB);  
 
-//     pos360NameClean.value   = generateCleanString(stringA);                
-//     drizlyNameClean.value   = generateCleanString(stringB);  
-    
+    pos360NameClean.value   = generateCleanString(stringA);                
+    drizlyNameClean.value   = generateCleanString(stringB);  
 
-//     pos360Num.value         = findNumbersInString(stringA);                
-//     drizlyNum.value         = findNumbersInString(stringB);        
+    pos360Num.value         = findNumbersInString(stringA);                
+    drizlyNum.value         = findNumbersInString(stringB);        
 
-//     pos360PackSize.value    = findPackSize(stringA);  
-//     drizlyPackSize.value    = findPackSize(stringB);    
+    pos360PackSize.value    = findPackSize(stringA);  
+    drizlyPackSize.value    = findPackSize(stringB);    
 
-//     pos360VolumeSize.value  = findVolumeSize(stringA);    
-//     drizlyVolumeSize.value  = findVolumeSize(stringB);   
+    pos360VolumeSize.value  = findVolumeSize(stringA);    
+    drizlyVolumeSize.value  = findVolumeSize(stringB);   
 
-//     stringMatch.value       = generateStringMatchScore(stringA,stringB);
-//     doNumbersMatch.value    = doStringNumbersMatch(stringA,stringB);    
-//     doPackSizeMatch.value   = doesPacksizeMatch(stringA,stringB);
-//     doVolumesMatch.value    = doesVolumeSizeMatch(stringA,stringB,0);
-//     doVolumesMatchDot3.value    = doesVolumeSizeMatch(stringA,stringB,.3);
-//     doVolumesMatchDot5.value    = doesVolumeSizeMatch(stringA,stringB,.5);
-// }
-// await workbook.xlsx.writeFile(
-//     `./excel/QC - Results.xlsx`
-// );
+    stringMatch.value       = generateStringMatchScore(stringA,stringB);
+    doNumbersMatch.value    = doStringNumbersMatch(stringA,stringB);    
+    doPackSizeMatch.value   = doesPacksizeMatch(stringA,stringB);
+    doVolumesMatch.value    = doesVolumeSizeMatch(stringA,stringB,0);
+    doVolumesMatchDot3.value    = doesVolumeSizeMatch(stringA,stringB,.3);
+    doVolumesMatchDot5.value    = doesVolumeSizeMatch(stringA,stringB,.5);
+}
+await workbook.xlsx.writeFile(
+    `./excel/QC - Results.xlsx`
+);
 
 // let count = 0;
 // for (let i = 0; i < excelData.length; i++){
